@@ -28,6 +28,9 @@ dev.off()
 #Fig. 1e
 VlnPlot(object = LG180_integrated, features = "Itgam", pt.size = 0)
 
+#Fig. 1f
+write.csv(table(LG180_integrated@active.ident, LG180_integrated@meta.data$Condition), "cell_counts_all_0.1_.csv")
+
 #Remove clusters 7, 8, 9 with low Itgam/CD11b expression
 table(LG180_integrated@active.ident)
 LG180_integrated <- subset(LG180_integrated, idents = c("7", "8", "9"), invert = TRUE)
