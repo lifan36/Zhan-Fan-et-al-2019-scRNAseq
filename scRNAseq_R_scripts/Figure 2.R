@@ -14,7 +14,7 @@ LG180_markers <- FindAllMarkers(LG180_integrated, only.pos = F, min.pct = 0.25, 
 write.csv(LG180_markers, "LG180_markers.csv")
 top5 <- LG180_markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
 pdf("HeatMapTop5_all_0.1.pdf", width=10, height=8)
-DoHeatmap(LG180_integrated, features = top20$gene) + NoLegend()
+DoHeatmap(LG180_integrated, features = top5$gene) + NoLegend()
 dev.off()
 
 #Figure 2b
