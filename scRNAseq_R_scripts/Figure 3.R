@@ -8,8 +8,8 @@ library(MAST)
 setwd("~/Desktop/data_analysis/elife/D2/all_0.1_local")
 
 LG180_integrated <- readRDS("elife_microglial_cells_only.rds")
-#for figure 3
 
+#for figure 3
 MG_homeostasis <- c("Trem2", "Tmem119","P2ry12","P2ry13", "Selplg", "Aif1", "Cx3cr1", "Csf1r", "Hexb")
 DoHeatmap(LG180_integrated, features = MG_homeostasis, size = 2, draw.lines = T) 
 
