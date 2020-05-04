@@ -63,6 +63,7 @@ lib_LG180_A33A34.data_filter[["sample_name"]] = c('D2-3')
 rm(lib_LG180_A19.data, lib_LG180_A31.data, lib_LG180_A32.data, lib_LG180_A22A23.data, lib_LG180_A35A36.data, lib_LG180_A37A38.data, lib_LG180_A20A21.data, lib_LG180_A24A25.data, lib_LG180_A33A34.data)                                            
 
 project_list <- c(lib_LG180_A19.data_filter, lib_LG180_A31.data_filter, lib_LG180_A32.data_filter, lib_LG180_A22A23.data_filter, lib_LG180_A35A36.data_filter, lib_LG180_A37A38.data_filter, lib_LG180_A20A21.data_filter, lib_LG180_A24A25.data_filter, lib_LG180_A33A34.data_filter)
+
 for (i in 1:length(project_list)){
   project_list[[i]][['percent.mt']] <- PercentageFeatureSet(project_list[[i]], pattern = "^mt.")
   project_list[[i]] <- subset(x = project_list[[i]], subset = nCount_RNA < 20000 & percent.mt < 10)
@@ -103,6 +104,10 @@ LG180_integrated <- FindNeighbors(LG180_integrated, dims = 1:10)
 LG180_integrated <- FindClusters(LG180_integrated, resolution = 0.1)
 LG180_integrated <- RunUMAP(LG180_integrated, dims = 1: 10, perplexity = 20)
 DimPlot(LG180_integrated, reduction = 'umap', label = T)
+
+DimPlot(LG180_integrated, reduction = "umap", split.by = "Condition", label = T)
+DimPlot(LG180_integrated, reduction = "umap", split.by = "Batch", label = T)
+DimPlot(LG180_integrated, reduction = "umap", split.by = "sample_name", label = T)
 
 # rename clusters
 n <- dim(table(LG180_integrated@active.ident))
