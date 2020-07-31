@@ -78,7 +78,7 @@ ggplot(percent_summary_mac2, aes(x=2, y=Percent_UP_MAC2_pos, fill=dev_stage)) +
   geom_bar(width = 1, stat = "identity", color="black", size=0.25) + coord_polar("y", start=0, direction = -1) +
   xlim(0.5, 2.5) + scale_fill_manual(values = my_color,
                                      name="MG Dev Genes", labels=my_labels) +
-  ggtitle("Mac2+ UP DEGs") +
+  
   geom_text(aes(x=0.5, y=0), label=paste("overlap",sum(unlist(lapply(dev.up.overlap,length))),sep="\n"), size=5) +
   ylab(NULL) + xlab(NULL) +
   theme(aspect.ratio = 1) +
@@ -95,7 +95,7 @@ ggplot(percent_summary_mac2, aes(x=2, y=Percent_UP_MAC2_pos, fill=dev_stage)) +
         axis.ticks = element_blank(),
         panel.grid  = element_blank()) 
 
-ggsave("Mac2microglia_UP_devstages_Hammond_overlap.pdf", plot = last_plot(), device = "pdf", path = "",
+ggsave("Mac2microglia_UP_devstages_Hammond_overlap.pdf", plot = last_plot(), device = "pdf", path = "~/Desktop",
        scale = 0.8, width = 8, height = 4, units = c("in"),
        dpi = 600, limitsize = FALSE)
 
@@ -110,7 +110,7 @@ ggplot(percent_summary_mac2, aes(x=2, y=Percent_DN_MAC2_pos, fill=dev_stage)) +
   geom_bar(width = 1, stat = "identity", color="black", size=0.25) + coord_polar("y", start=0, direction = -1) +
   xlim(0.5, 2.5) + scale_fill_manual(values = my_color, breaks=percent_summary_mac2$dev_stage,
                                      name="MG Dev Genes", label=my_labels) +
-  ggtitle("Mac2+ DN DEGs") +
+  
   geom_text(aes(x=0.5, y=0), label=paste("overlap",sum(unlist(lapply(dev.dn.overlap,length))),sep="\n"), size=5) +
   ylab(NULL) + xlab(NULL) +
   theme(aspect.ratio = 1) +
@@ -127,7 +127,6 @@ ggplot(percent_summary_mac2, aes(x=2, y=Percent_DN_MAC2_pos, fill=dev_stage)) +
         axis.ticks = element_blank(),
         panel.grid  = element_blank())
 
-ggsave("Mac2microglia_DN_devstages_Hammond_overlap.pdf", plot = last_plot(), device = "pdf", path = "",
+ggsave("Mac2microglia_DN_devstages_Hammond_overlap.pdf", plot = last_plot(), device = "pdf", path = "~/Desktop",
        scale = 0.8, width = 8, height = 4, units = c("in"),
        dpi = 600, limitsize = FALSE)
-
