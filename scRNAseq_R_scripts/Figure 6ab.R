@@ -1,14 +1,19 @@
+library(ggplot2)
+library(Seurat)
+library(ggrepel)
+library(RColorBrewer)
+library(dplyr)
+library(cowplot)
+library(reshape2)
+library(MAST)
+library(patchwork)
 # Figure 6a and 6b plots
 # Subset Mac2+ cells based on Mac2 expression level
 
 # Load in Seurat object
 setwd("")
-data<-readRDS("elife_Ctrl_D0_D2.rds")
-
-# Remove clusters 7-9
-Idents(data) <- "seurat_clusters_new"
-data <- subset(data,idents = c(1:6))
-
+data<-readRDS("elife_microglial_cells_only.rds")
+data@active.ident
 # Extract raw data and subset "Lgals3" expression data
 raw <- data@assays$RNA@scale.data
 
@@ -25,6 +30,12 @@ head(data@meta.data)
 lgals3.cutoff <- mean(lgals3.data) + 1*sd(lgals3.data)
 table(data@meta.data$lgals3.data>lgals3.cutoff)
 
+Cluster_1_2 <- subset(data, idents = c("1", "2"))
+table(Cluster_1_2@meta.data$lgals3.data>lgals3.cutoff)
+
+Cluster_5 <- subset(data, idents = c("5"))
+table(Cluster_5@meta.data$lgals3.data>lgals3.cutoff)
+
 cell_index <- which(data@meta.data$lgals3.data>lgals3.cutoff) 
 cell_name <- rownames(data@meta.data)[cell_index]
 
@@ -38,7 +49,7 @@ data$seurat_clusters_new <- as.numeric(data$seurat_clusters)
 # UMAP and visualizations of Mac2+ cells
 Idents(data)<-"mac2"
 DimPlot(data,cols=c("grey","orange"))
-ggsave("umap mac2+.png", plot = last_plot(), device = "png", 
+ggsave("umap mac2+.png", plot = last_plot(), device = "png", path = "",
        scale = 0.8, width = 5, height = 4, units = c("in"),
        dpi = 600, limitsize = FALSE)
 
@@ -46,3 +57,4 @@ RidgePlot(data, features=c("Lgals3"), col=c("grey","orange"))
 ggsave("ridge plot mac2+ microglia.pdf", plot = last_plot(), device = "pdf", path = "",
        scale = 0.8, width = 5.5, height = 4, units = c("in"),
        dpi = 600, limitsize = FALSE)
+
