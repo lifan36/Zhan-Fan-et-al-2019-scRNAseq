@@ -5,7 +5,7 @@ library(cowplot)
 library(reshape2)
 library(MAST)
 
-setwd("~/Desktop/data_analysis/elife/D2/all_0.1_local")
+setwd("")
 
 LG180_integrated <- readRDS("elife_microglial_cells_only.rds")
 
@@ -40,7 +40,7 @@ dev.off()
 
 #For Cluster-3, skip lncRNAs (Gm42418, Gm26917), AY036118 and the mitochondrially encoded genes (mt-*)
 
-pdf("Cluster3_DEGs.pdf", width=24, height=6)
-VlnPlot_2(object = LG180_integrated, features = c("Lars2", "Xist", "Dst","Macf1","Atp5g1","Kcnq1ot1","Rps26","Dbi","Rps8","Cox6c"),
+pdf("Cluster3_DEGs.pdf", width=24, height=7.2)
+VlnPlot_2(object = LG180_integrated, features = c("Lars2", "Dst", "Xist","Macf1","Atp5g1","Kcnq1ot1","Dbi","Rps26","Cox6c","Rps8"),
           pt.size = 0, ncol =5, xlab = "Cluster")
 dev.off()
