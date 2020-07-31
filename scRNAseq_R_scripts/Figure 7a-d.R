@@ -6,8 +6,8 @@ setwd("")
 data<-readRDS("elife_Ctrl_D0_D2.rds")
 
 # Remove clusters 7-9
-Idents(data) <- "seurat_clusters_new"
-data <- subset(data,idents = c(1:6))
+#Idents(data) <- "seurat_clusters_new"
+#data <- subset(data,idents = c(1:6))
 
 # Extract raw lgals3 data
 raw <- data@assays$RNA@scale.data
@@ -50,6 +50,8 @@ Idents(data)<-"cluster_mac2"
 marker <- FindMarkers(data,ident.1="Ctrl_mac2",ident.2="Ctrl_homeo", logfc.threshold = 0,
                       test.use = "MAST")
 
+write.csv(marker,"mac2_ctrl_vs_homeostatic.csv")
+
 # Bar plot of number of Mac2+ cells per condition
 library(ggplot2)
 mac2.number <- as.data.frame(table(data$mac2, data$Condition))
@@ -65,13 +67,12 @@ ggplot(mac2.only,aes(x=Condition,y=Cell.number,fill=Condition,label=percent))+
   scale_fill_manual(values=c("Ctrl" = "grey", "D0" = "maroon1", "D2" = "dodgerblue"))+
   theme_classic()+
   geom_text(vjust = -1)+
-  ylim(0,1800)+
+  ylim(0,1500)+
   ylab("Number of Mac2+ cells")+
-  ggtitle("All Mac2+")+
   NoLegend()
 
 ggsave("Mac2+ cells by condition.pdf",plot = last_plot(),
-       path = "~/Documents/Lab/Lihong revision/D2_included/plots",
+       path = "~/Desktop",
        width = 3, height = 3.5, units = "in")
 
 # Volcano plot of DEGs from Mac2+ vs homeostatic MG from control samples =====
@@ -111,7 +112,6 @@ ggplot() +
                   color="black", fontface = 'bold',size = 5, box.padding = 0.5,
                   point.padding = 0.5, segment.size=0.25, segment.colour="black") +
   ylab("-Log10[FDR]") + xlab("Log2FC") +
-  ggtitle("Mac2+ cells in Ctrl vs Homeostatic MG")+
   theme_bw()+
   theme(panel.grid.major.x  = element_blank(),
         panel.grid.major.y  = element_blank(),
@@ -125,6 +125,10 @@ ggplot() +
   theme(aspect.ratio = 1) +
   scale_x_continuous(breaks=seq(-4, 4, 2), limits=c(-4, 4))+
   NoLegend()
+
+ggsave("Volcano_CtrlMac2pos_v_homeostatic.pdf", plot = last_plot(), device = "pdf", path = "~/Desktop",
+       scale = 0.8, width = 7, height = 7, units = c("in"),
+       dpi = 600, limitsize = FALSE)
 
 # compare DEG numbers between Mac2+ control vs MG1 and Mac2+ all vs MG1
 all.marker<-read.csv("mac2_vs_homeostatic microglia.csv",header=T)
@@ -156,7 +160,7 @@ g <- draw.pairwise.venn(area1 = length(all.marker.up), area2 = length(marker.up)
                         fill = c("maroon1", "maroon1"), col = c("white", "white"), 
                         alpha = c(0.5, 0.5), cat.pos = c(0, 0), cat.dist = c(0.02, 0.02))
 
-ggsave("venn_up_mac2_mg.pdf", plot = g, device = "pdf", path = "",
+ggsave("venn_up_mac2_mg.pdf", plot = g, device = "pdf", path = "~/Desktop",
        scale = 1, width = 10, height = 10, units = c("in"),
        dpi = 300, limitsize = FALSE)
 
@@ -170,6 +174,6 @@ g <- draw.pairwise.venn(area1 = length(all.marker.dn), area2 = length(marker.dn)
                         alpha = c(0.5, 0.5), cat.pos = c(0, 0), cat.dist = c(0.02, 0.02))
 
 
-ggsave("venn_dn_mac2_mg.pdf", plot = g, device = "pdf", path = "",
+ggsave("venn_dn_mac2_mg.pdf", plot = g, device = "pdf", path = "~/Desktop",
        scale = 1, width = 10, height = 10, units = c("in"),
        dpi = 300, limitsize = FALSE)
