@@ -4,8 +4,8 @@ library(ggplot2)
 library(cowplot)
 library(reshape2)
 library(MAST)
-
-setwd("~/Desktop/data_analysis/elife/D2/all_0.1_local")
+library(patchwork)
+setwd("")
 
 LG180_integrated <- readRDS("~/Desktop/data_analysis/elife/D2/elife_Ctrl_D0_D2.rds")
 
@@ -26,13 +26,16 @@ DimPlot(LG180_integrated, reduction = 'umap', label = T)
 dev.off()
 
 #Fig. 1e
-VlnPlot(object = LG180_integrated, features = "Itgam", pt.size = 0)
+VlnPlot(object = LG180_integrated, features = "Itgam", pt.size = 0) & 
+  theme( plot.title = element_text( face = "italic") )
 
-#Fig. 1f
-write.csv(table(LG180_integrated@active.ident, LG180_integrated@meta.data$Condition), "cell_counts_all_0.1_.csv")
+VlnPlot(object = LG180_integrated, features = "Aif1", pt.size = 0) & 
+  theme( plot.title = element_text( face = "italic") )
 
-#Remove clusters 7, 8, 9 with low Itgam/CD11b expression
+
+#Remove clusters 6, 7, 8, 9 with low Itgam/CD11b and Aif1/Iba1 expression
 table(LG180_integrated@active.ident)
-LG180_integrated <- subset(LG180_integrated, idents = c("7", "8", "9"), invert = TRUE)
+LG180_integrated <- subset(LG180_integrated, idents = c("6","7", "8", "9"), invert = TRUE)
 table(LG180_integrated@active.ident)
 saveRDS(LG180_integrated, file = 'elife_microglial_cells_only.rds')
+
