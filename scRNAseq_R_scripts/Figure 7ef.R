@@ -16,7 +16,7 @@ mac2_up <- mac2$gene[mac2$avg_logFC>0&mac2$p_val_adj<0.05]
 mac2_dn <- mac2$gene[mac2$avg_logFC<0&mac2$p_val_adj<0.05]
 
 # Load in developmental genes from Matcovitch-Natan and Winter et al
-setwd("~/Documents/Lab/Lihong revision")
+#setwd("~/Documents/Lab/Lihong revision")
 df <- read.csv("Dev_Genes.csv",header=T)
 YS_genes <- df$Gene[df$Cluster==1]
 E1_genes <- df$Gene[df$Cluster==2]
@@ -86,8 +86,8 @@ ggplot(percent_summary_mac2, aes(x=2, y=Percent_UP_MAC2_pos, fill=dev_stage)) +
         axis.ticks = element_blank(),
         panel.grid  = element_blank()) 
 
-ggsave("Mac2_mg_ctrl_UP_devstages_overlap.pdf", plot = last_plot(), device = "pdf", path = "",
-       scale = 0.8, width = 8, height = 4, units = c("in"),
+ggsave("Mac2_mg_ctrl_UP_devstages_overlap.pdf", plot = last_plot(), device = "pdf", path = "~/Desktop",
+       scale = 0.9, width = 8, height = 4, units = c("in"),
        dpi = 600, limitsize = FALSE)
 
 
@@ -121,7 +121,6 @@ ggplot(percent_summary_mac2_reorder, aes(x=2, y=Percent_DN_MAC2_pos, fill=dev_st
         axis.ticks = element_blank(),
         panel.grid  = element_blank())
 
-ggsave("Mac2_Ctrl_DN_devstages_overlap.pdf", plot = last_plot(), device = "pdf", path = "",
-       scale = 0.8, width = 8, height = 4, units = c("in"),
+ggsave("Mac2_Ctrl_DN_devstages_overlap.pdf", plot = last_plot(), device = "pdf", path = "~/Desktop",
+       scale = 0.9, width = 8, height = 4, units = c("in"),
        dpi = 600, limitsize = FALSE)
-
