@@ -7,7 +7,7 @@ data<-readRDS("elife_Ctrl_D0_D2.rds")
 
 # Remove clusters 7-9
 Idents(data) <- "seurat_clusters_new"
-data <- subset(data,idents = c(1:6))
+data <- subset(data,idents = c(1:5))
 
 # Label clusters 1 and 2 as homeostatic clusters
 # Extract contol conditions from this homeostatic cluster
