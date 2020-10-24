@@ -41,6 +41,6 @@ dev.off()
 #For Cluster-3, skip lncRNAs (Gm42418, Gm26917), AY036118 and the mitochondrially encoded genes (mt-*)
 
 pdf("Cluster3_DEGs.pdf", width=24, height=7.2)
-VlnPlot_2(object = LG180_integrated, features = c("Lars2", "Dst", "Xist","Macf1","Atp5g1","Kcnq1ot1","Dbi","Rps26","Cox6c","Rps8"),
+VlnPlot_2(object = LG180_integrated, features = c("Lars2","Xist", "Dst","Kcnq1ot1", "Macf1","Rbm25","Chd9","Ddx17","Plek","Stard9"),
           pt.size = 0, ncol =5, xlab = "Cluster")
 dev.off()
