@@ -6,7 +6,7 @@ library(stringr)
 library(dplyr)
 library(ggplot2)
 
-setwd("")
+setwd("~/Documents/Elife_Data/Re-Re-Revision")
 # input for GSEA analysis
 mac2<-read.csv("mac2_vs_homeostatic microglia.csv",header=T)
 mac2_dn<-mac2[mac2$avg_logFC<0&mac2$p_val_adj<0.05,]
@@ -19,7 +19,7 @@ write.csv(mac2_DE,"mac2_DEGs.csv")
 # set the directory where your csv file is located
 setwd("")
 
-df <- read.csv("GSEA_overlap.csv",header=T)
+df <- read.csv("GSEA_overlap_new.csv",header=T)
 colnames(df) <- c("name", "genes_in_gsea", "description", "genes_in_data", "k/K", "p-value", "FDR")
 
 df$FDR <- as.numeric(df$FDR)
@@ -31,6 +31,8 @@ BP_2$Name <-  gsub("HALLMARK_", "", BP_2$name)
 BP_2$Name <- gsub("*_", " ", BP_2$Name)
 BP_2$Name <-  factor(BP_2$Name, levels=rev(BP_2$Name))
 
+
+########Could not run the following two lines of code, but they don't appear to be necessary to generated the graphs
 df_summary <- data.frame(name=BP_2$Name, cluster=files[i])
 data_conslidate <- rbind(data_conslidate, df_summary)
 
@@ -53,12 +55,12 @@ ggplot(data=BP_2, aes(x=Name  , y=minus_logp)) +
   coord_flip() + 
   theme(aspect.ratio = 1.5)
 
-ggsave(paste("GSEA_all", ".pdf", sep=""), plot = last_plot(), device = "pdf", path = "",
+ggsave(paste("GSEA_all", ".pdf", sep=""), plot = last_plot(), device = "pdf", path = "~/Desktop",
        scale = 0.5, width = 12, height = 6, units = c("in"),
        dpi = 600, limitsize = FALSE)
 
 #IPA results
-ipa<-read.csv("IPA_upstream.csv",header=T)
+ipa<-read.csv("IPA_recommended.csv",header=T)
 ipa <- subset(ipa, p.value.of.overlap < 0.05)
 ipa$colors <- "grey"
 ipa$colors[ipa$Activation.z.score>0]<-"red"
@@ -70,10 +72,10 @@ ggplot(data=ipa,aes(x=-log(p.value.of.overlap),y=Activation.z.score,label=Upstre
   geom_vline(xintercept=-log(0.05),linetype="dotted")+
   geom_text_repel(color="black")+
   scale_color_manual(values=c("red"="red","blue"="blue","grey"="grey"))+
+  theme(axis.text=element_text(size=14))+
   ylab("Predicted Z score")+ xlab("-Log10(p-value)")
 
-ggsave(paste("IPA z scores", ".pdf", sep=""), plot = last_plot(), device = "pdf", path = "",
-       scale = 1, width = 4.5, height = 4, units = c("in"),
+ggsave(paste("IPA z scores w new recommendations", ".pdf", sep=""), plot = last_plot(), device = "pdf", path = "~/Desktop",
+       scale = 1, width = 5, height = 4, units = c("in"),
        dpi = 600, limitsize = FALSE)
-
 
