@@ -54,15 +54,15 @@ lib_LG180_A24A25.data_filter[["Condition"]] = c('D2')
 lib_LG180_A24A25.data_filter[["Batch"]] = c('Batch-1')
 lib_LG180_A24A25.data_filter[["sample_name"]] = c('D2-2')
 
-lib_LG180_A33A34.data <- Read10X(data.dir = "/athena/ganlab/scratch/lif4001/Fan_microglia/cellranger_count_LG180_A33A34/outs/filtered_feature_bc_matrix")
-lib_LG180_A33A34.data_filter <- CreateSeuratObject(counts = lib_LG180_A33A34.data, min.cells = 10, min.features = 200, project = "LG180_A33A34")
-lib_LG180_A33A34.data_filter[["Condition"]] = c('D2')
-lib_LG180_A33A34.data_filter[["Batch"]] = c('Batch-2')
-lib_LG180_A33A34.data_filter[["sample_name"]] = c('D2-3')
+#lib_LG180_A33A34.data <- Read10X(data.dir = "/athena/ganlab/scratch/lif4001/Fan_microglia/cellranger_count_LG180_A33A34/outs/filtered_feature_bc_matrix")
+#lib_LG180_A33A34.data_filter <- CreateSeuratObject(counts = lib_LG180_A33A34.data, min.cells = 10, min.features = 200, project = "LG180_A33A34")
+#lib_LG180_A33A34.data_filter[["Condition"]] = c('D2')
+#lib_LG180_A33A34.data_filter[["Batch"]] = c('Batch-2')
+#lib_LG180_A33A34.data_filter[["sample_name"]] = c('D2-3')
 
-rm(lib_LG180_A19.data, lib_LG180_A31.data, lib_LG180_A32.data, lib_LG180_A22A23.data, lib_LG180_A35A36.data, lib_LG180_A37A38.data, lib_LG180_A20A21.data, lib_LG180_A24A25.data, lib_LG180_A33A34.data)                                            
+rm(lib_LG180_A19.data, lib_LG180_A31.data, lib_LG180_A32.data, lib_LG180_A22A23.data, lib_LG180_A35A36.data, lib_LG180_A37A38.data, lib_LG180_A20A21.data, lib_LG180_A24A25.data)                                            
 
-project_list <- c(lib_LG180_A19.data_filter, lib_LG180_A31.data_filter, lib_LG180_A32.data_filter, lib_LG180_A22A23.data_filter, lib_LG180_A35A36.data_filter, lib_LG180_A37A38.data_filter, lib_LG180_A20A21.data_filter, lib_LG180_A24A25.data_filter, lib_LG180_A33A34.data_filter)
+project_list <- c(lib_LG180_A19.data_filter, lib_LG180_A31.data_filter, lib_LG180_A32.data_filter, lib_LG180_A22A23.data_filter, lib_LG180_A35A36.data_filter, lib_LG180_A37A38.data_filter, lib_LG180_A20A21.data_filter, lib_LG180_A24A25.data_filter)
 
 for (i in 1:length(project_list)){
   project_list[[i]][['percent.mt']] <- PercentageFeatureSet(project_list[[i]], pattern = "^mt.")
@@ -79,16 +79,16 @@ LG180_A35A36 <- project_list[[5]]
 LG180_A37A38 <- project_list[[6]]
 LG180_A20A21 <- project_list[[7]]
 LG180_A24A25 <- project_list[[8]]
-LG180_A33A34 <- project_list[[9]]
+#LG180_A33A34 <- project_list[[9]]
 
-rm(lib_LG180_A19.data_filter, lib_LG180_A31.data_filter, lib_LG180_A32.data_filter, lib_LG180_A22A23.data_filter, lib_LG180_A35A36.data_filter, lib_LG180_A37A38.data_filter, lib_LG180_A20A21.data_filter, lib_LG180_A24A25.data_filter, lib_LG180_A33A34.data_filter)
+rm(lib_LG180_A19.data_filter, lib_LG180_A31.data_filter, lib_LG180_A32.data_filter, lib_LG180_A22A23.data_filter, lib_LG180_A35A36.data_filter, lib_LG180_A37A38.data_filter, lib_LG180_A20A21.data_filter, lib_LG180_A24A25.data_filter)
 rm(project_list)
 
 #1 by 1 by 1 by 1 Integration
-project_list <- c(LG180_A19, LG180_A31, LG180_A32, LG180_A22A23, LG180_A35A36, LG180_A37A38, LG180_A20A21, LG180_A24A25, LG180_A33A34)
+project_list <- c(LG180_A19, LG180_A31, LG180_A32, LG180_A22A23, LG180_A35A36, LG180_A37A38, LG180_A20A21, LG180_A24A25)
 anchors <- FindIntegrationAnchors(object.list = project_list, dims = 1:30)
 LG180_integrated <- IntegrateData(anchorset = anchors, dims = 1:30)
-rm(LG180_A19, LG180_A31, LG180_A32, LG180_A22A23, LG180_A35A36, LG180_A37A38, LG180_A20A21, LG180_A24A25, LG180_A33A34, anchors)
+rm(LG180_A19, LG180_A31, LG180_A32, LG180_A22A23, LG180_A35A36, LG180_A37A38, LG180_A20A21, LG180_A24A25, anchors)
 saveRDS(LG180_integrated, file = 'integrated_LG180_1by1by1by1.rds')
 
 #Scale integrated data
