@@ -30,12 +30,6 @@ head(data@meta.data)
 lgals3.cutoff <- mean(lgals3.data) + 1*sd(lgals3.data)
 table(data@meta.data$lgals3.data>lgals3.cutoff)
 
-Cluster_1_2 <- subset(data, idents = c("1", "2"))
-table(Cluster_1_2@meta.data$lgals3.data>lgals3.cutoff)
-
-Cluster_5 <- subset(data, idents = c("5"))
-table(Cluster_5@meta.data$lgals3.data>lgals3.cutoff)
-
 cell_index <- which(data@meta.data$lgals3.data>lgals3.cutoff) 
 cell_name <- rownames(data@meta.data)[cell_index]
 
@@ -49,7 +43,7 @@ data$seurat_clusters_new <- as.numeric(data$seurat_clusters)
 # UMAP and visualizations of Mac2+ cells
 Idents(data)<-"mac2"
 DimPlot(data,cols=c("grey","orange"))
-ggsave("umap mac2+.png", plot = last_plot(), device = "png", path = "",
+ggsave("umap mac2+.pdf", plot = last_plot(), device = "pdf", path = "",
        scale = 0.8, width = 5, height = 4, units = c("in"),
        dpi = 600, limitsize = FALSE)
 
