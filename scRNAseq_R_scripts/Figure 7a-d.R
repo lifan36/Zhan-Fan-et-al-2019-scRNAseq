@@ -3,15 +3,12 @@
 
 # Load Seurat object
 setwd("")
-data<-readRDS("elife_microglial_cells_only.rds")
+data<-readRDS("noD2-3_elife_microglial_cells_only.rds")
 
 ## Saving the active ident with the 5 clusters used for this revision in the metadata
 ## As also done in the 6ab_Re_Re code 
 data$RevisedClusters <- Idents(data)
 
-# Remove clusters 7-9
-#Idents(data) <- "seurat_clusters_new"
-#data <- subset(data,idents = c(1:6))
 
 # Extract raw lgals3 data
 raw <- data@assays$RNA@scale.data
