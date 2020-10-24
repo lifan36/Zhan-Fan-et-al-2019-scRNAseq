@@ -11,13 +11,17 @@ library(RColorBrewer)
 ### title: "Microglia development follows a stepwise program to regulate brain homeostasis" 
 
 # Load in Suerat object
-data<- readRDS("elife_Ctrl_D0_D2.Rds")
-Idents(data)<-"cluster_mac2"
+data<- readRDS("elife_microglial_cells_only.rds")
+#########Ran the code defining the "mac2" metadata in 6ab_Re and indented to "mac2" NOT "Cluster_mac2"
+Idents(data)<-"mac2"
 
 # Identify DEGs for Mac2- cells vs Mac2+ cells
 DEG<-FindMarkers(data,ident.1="no",ident.2="mac2",logfc.threshold = 0,
                  test.use = "MAST")
+write.csv(DEG, "Mac2neg_v_Mac2pos.csv")
 
+#########Made a csv with the DEGs in it and deleted my environment (since all same variables are present from 6de)
+mac2<-read.csv("Mac2neg_v_Mac2pos.csv",header=T)
 colnames(mac2)<-as.character(c("gene","p_val","avg_logFC","pct.1","pct.2","p_val_adj"))
 mac2_up <- mac2$gene[mac2$avg_logFC>0&mac2$p_val_adj<0.05]
 mac2_dn <- mac2$gene[mac2$avg_logFC<0&mac2$p_val_adj<0.05]
@@ -77,7 +81,7 @@ ggplot(percent_summary_mac2, aes(x=2, y=Percent_UP_MAC2_pos, fill=dev_stage)) +
   geom_bar(width = 1, stat = "identity", color="black", size=0.25) + coord_polar("y", start=0, direction = -1) +
   xlim(0.5, 2.5) + scale_fill_manual(values = my_color,
                                      name="MG Dev Genes", labels=my_labels) +
-  ggtitle("Mac2+ UP DEGs") +
+  
   geom_text(aes(x=0.5, y=0), label=paste("overlap",sum(unlist(lapply(dev.up.overlap,length))),sep="\n"), size=8) +
   ylab(NULL) + xlab(NULL) +
   theme(aspect.ratio = 1) +
@@ -94,8 +98,8 @@ ggplot(percent_summary_mac2, aes(x=2, y=Percent_UP_MAC2_pos, fill=dev_stage)) +
         axis.ticks = element_blank(),
         panel.grid  = element_blank()) 
 
-ggsave("Mac2_neg_UP_devstages_overlap.pdf", plot = last_plot(), device = "pdf", path = "",
-       scale = 0.8, width = 8, height = 4, units = c("in"),
+ggsave("Mac2_neg_UP_devstages_overlap.pdf", plot = last_plot(), device = "pdf", path = "~/Desktop",
+       scale = 0.9, width = 8, height = 4, units = c("in"),
        dpi = 600, limitsize = FALSE)
 
 
@@ -112,7 +116,7 @@ ggplot(percent_summary_mac2_reorder, aes(x=2, y=Percent_DN_MAC2_pos, fill=dev_st
   geom_bar(width = 1, stat = "identity", color="black", size=0.25) + coord_polar("y", start=0, direction = -1) +
   xlim(0.5, 2.5) + scale_fill_manual(values = my_color, breaks=percent_summary_mac2_reorder$dev_stage,
                                      name="MG Dev Genes", label=my_labels) +
-  ggtitle("Mac2+ DN DEGs") +
+  
   geom_text(aes(x=0.5, y=0), label=paste("overlap",sum(unlist(lapply(dev.dn.overlap,length))),sep="\n"), size=8) +
   ylab(NULL) + xlab(NULL) +
   theme(aspect.ratio = 1) +
@@ -129,6 +133,6 @@ ggplot(percent_summary_mac2_reorder, aes(x=2, y=Percent_DN_MAC2_pos, fill=dev_st
         axis.ticks = element_blank(),
         panel.grid  = element_blank())
 
-ggsave("Mac2_neg_DN_devstages_overlap.pdf", plot = last_plot(), device = "pdf", path = "",
-       scale = 0.8, width = 8, height = 4, units = c("in"),
+ggsave("Mac2_neg_DN_devstages_overlap.pdf", plot = last_plot(), device = "pdf", path = "~/Desktop",
+       scale = 0.9, width = 8, height = 4, units = c("in"),
        dpi = 600, limitsize = FALSE)
