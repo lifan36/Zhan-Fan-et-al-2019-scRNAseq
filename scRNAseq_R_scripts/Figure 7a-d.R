@@ -3,7 +3,11 @@
 
 # Load Seurat object
 setwd("")
-data<-readRDS("elife_Ctrl_D0_D2.rds")
+data<-readRDS("elife_microglial_cells_only.rds")
+
+## Saving the active ident with the 5 clusters used for this revision in the metadata
+## As also done in the 6ab_Re_Re code 
+data$RevisedClusters <- Idents(data)
 
 # Remove clusters 7-9
 #Idents(data) <- "seurat_clusters_new"
@@ -31,18 +35,18 @@ cell_name <- rownames(data@meta.data)[cell_index]
 # add a level to ident 
 data$mac2 <- "no"
 data$mac2[row.names(data@meta.data) %in% cell_name] <- "mac2"
-data$cluster_mac2 <- as.numeric(data$seurat_clusters)
+data$cluster_mac2 <- as.numeric(data$RevisedClusters)
 data$cluster_mac2[row.names(data@meta.data) %in% cell_name] <- "mac2"
-data$seurat_clusters_new <- as.numeric(data$seurat_clusters)
+data$seurat_clusters_new <- as.numeric(data$RevisedClusters)
+#### Lines 34 and 36 were changed from seurat_clusters to RevisedClusters after as.numeric()
 
-# Label clusters 1 and 2 as homeostatic clusters
+# Label cluster 2 as homeostatic clusters
 # Extract contol conditions from this homeostatic cluster
 # Compare with Mac2+ cells
 
 data$cluster_mac2 <- as.numeric(data$seurat_clusters)
 data$cluster_mac2[data$Condition == "Ctrl" & data$mac2 == "mac2"] <- "Ctrl_mac2"
-data$cluster_mac2[data$Condition == "Ctrl" & data$seurat_clusters_new == 1] <- "Ctrl_homeo"
-data$cluster_mac2[data$Condition == "Ctrl" & data$seurat_clusters_new == 2] <- "Ctrl_homeo"
+data$cluster_mac2[data$Condition == "Ctrl" & data$RevisedClusters == 2] <- "Ctrl_homeo"
 table(data$cluster_mac2)
 
 # Comparing Mac2+ cells from control samples vs Homeostatic microglia from control samples
@@ -60,15 +64,22 @@ total.number <- as.data.frame(table(data$Condition))
 colnames(total.number) <- c("Condition","Total.no")
 mac2.only <- subset(mac2.number, Mac2 == "mac2")
 mac2.only <- merge(mac2.only,total.number)
+mac2.only$Percent <- as.numeric(mac2.only$Cell.number)
+mac2.only$Percent <- paste(round(mac2.only$Cell.number / mac2.only$Total.no * 100,digits=1))
+
 mac2.only$percent <- paste(round(mac2.only$Cell.number / mac2.only$Total.no * 100,digits=1), "%", sep="")
 
-ggplot(mac2.only,aes(x=Condition,y=Cell.number,fill=Condition,label=percent))+
+df <- data.frame(Condition = c("Ctrl", "D0", "D2"), 
+                 Percentage = c(3.0, 9.8, 11.2))
+
+ggplot(df,aes(x=Condition,y=Percentage, fill=Condition, label=Percentage))+
   geom_bar(stat="identity")+
-  scale_fill_manual(values=c("Ctrl" = "grey", "D0" = "maroon1", "D2" = "dodgerblue"))+
+  scale_fill_manual(values=c("grey", "maroon1", "dodgerblue"))+
   theme_classic()+
+  theme(axis.text=element_text(size=12))+
   geom_text(vjust = -1)+
-  ylim(0,1500)+
-  ylab("Number of Mac2+ cells")+
+  ylim(0,15)+
+  ylab("% of Mac2+ Cells")+
   NoLegend()
 
 ggsave("Mac2+ cells by condition.pdf",plot = last_plot(),
