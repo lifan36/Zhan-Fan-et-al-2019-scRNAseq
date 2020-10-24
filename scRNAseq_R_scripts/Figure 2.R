@@ -19,18 +19,22 @@ DoHeatmap(LG180_integrated, features = top5$gene) + NoLegend()
 dev.off()
 
 #Figure 2b, c, d
+Cluster_1 <- subset(LG180_integrated, idents = "1") 
 Cluster_3 <- subset(LG180_integrated, idents = "3") 
 Cluster_4 <- subset(LG180_integrated, idents = "4")
 Cluster_5 <- subset(LG180_integrated, idents = "5")
 
+###Cluster-1:Ccl4 and Ccl3
+VlnPlot(Cluster_1, features = c("Ccl4","Ccl3"), group.by = "Condition", pt.size = 0.1) & 
+  theme( plot.title = element_text( face = "italic") )
 ###Cluster-3:Rps8 and Rps26
 VlnPlot(Cluster_3, features = c("Rps8","Rps26"), group.by = "Condition", pt.size = 0.1) & 
   theme( plot.title = element_text( face = "italic") )
-###Cluster-4:Mki67 and Top2a
-VlnPlot(Cluster_4, features = c("Mki67","Top2a"), group.by = "Condition", pt.size = 0.1) & 
+###Cluster-5:Mki67 and Top2a
+VlnPlot(Cluster_5, features = c("Mki67","Top2a"), group.by = "Condition", pt.size = 0.1) & 
   theme( plot.title = element_text( face = "italic") )
-###Cluster-5:Cd74 and H2-Aa
-VlnPlot(Cluster_5, features = c("Cd74","H2-Aa"), group.by = "Condition", pt.size = 0.1) & 
+###Cluster-4:Cd74 and H2-Aa
+VlnPlot(Cluster_4, features = c("Cd74","H2-Aa"), group.by = "Condition", pt.size = 0.1) & 
   theme( plot.title = element_text( face = "italic") )
 
 #Figure 2e
