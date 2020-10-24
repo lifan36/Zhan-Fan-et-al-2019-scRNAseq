@@ -2,46 +2,73 @@
 
 # Load Seurat object
 setwd("")
-data<-readRDS("elife_microglial_cells_only.rds")
 
-# Saving the active ident with the 5 clusters used for this revision in the metadata
-data$RevisedClusters <- Idents(data)
+data$cluster_mac2 <- data$seurat_clusters_new
+data$cluster_mac2[data$mac2 == "mac2"] <- "mac2"
+# Only cluster 2, as newly defined, is homestatic for this round of analysis 
+data$cluster_mac2[data$Condition == "Ctrl" & data$seurat_clusters_new == 2] <- "Ctrl_homeo"
 
-# Extract raw data and subset "Lgals3" expression data
-raw <- data@assays$RNA@scale.data
+Idents(data)<-"cluster_mac2"
+marker <- FindMarkers(data,ident.1="mac2",ident.2="Ctrl_homeo", logfc.threshold = 0,
+                      test.use = "MAST")
 
-lgals3.data <- raw[rownames(raw)=="Lgals3"]
-names(lgals3.data) <- colnames(raw)
+library(ggplot2)
+library(ggrepel)
 
-data <- AddMetaData(
-  object = data,
-  metadata = lgals3.data,
-  col.name = "lgals3.data")
-head(data@meta.data)
+# Volcano plot of DEGs =====
 
-# Mac2+ cells considered those with > 1 SD Mac2+ expression
-lgals3.cutoff <- mean(lgals3.data) + 1*sd(lgals3.data)
-table(data@meta.data$lgals3.data>lgals3.cutoff)
+# Identify DEGs for Mac2+ vs homeostatic control microglia
+marker$colours <- c("NC")
+marker$colours[marker$avg_logFC >= 0.5 & marker$p_val_adj <= 0.05] <- c("UP")
+marker$colours[marker$avg_logFC <= -0.5 & marker$p_val_adj <= 0.05] <- c("DN")
 
-cell_index <- which(data@meta.data$lgals3.data>lgals3.cutoff) 
-cell_name <- rownames(data@meta.data)[cell_index]
+# Select genes of interest to highlight
+genes_select_mature <- c("Cx3cr1", "Csf1r", "Mafb", "Tmem119")
+genes_to_plot_mature <- marker[row.names(marker) %in% genes_select_mature, ]
+genes_to_plot_mature$Cluster <- "Mature"
 
-# add a level to ident 
-data$mac2 <- "no"
-data$mac2[row.names(data@meta.data) %in% cell_name] <- "mac2"
-data$cluster_mac2 <- as.numeric(data$RevisedClusters)
-data$cluster_mac2[row.names(data@meta.data) %in% cell_name] <- "mac2"
-data$seurat_clusters_new <- as.numeric(data$RevisedClusters)
-#### Lines 34 and 36 were changed from seurat_clusters to RevisedClusters after as.numeric()
+genes_select_immature <- c("Lyz2", "Mmp8", "Mmp9", "Pf4", "Cdk1", "Lgals3")
+### Removed Ifit3 from the above list of markers since it is low on the -Log10[FDR] axis 
+genes_to_plot_immature <- marker[row.names(marker)  %in% genes_select_immature, ]
+genes_to_plot_immature$Cluster <- c("Immature")
 
-# UMAP and visualizations of Mac2+ cells
-Idents(data)<-"mac2"
-DimPlot(data,cols=c("grey","orange"))
-ggsave("umap mac2+.pdf", plot = last_plot(), device = "pdf", 
-       scale = 0.8, width = 5, height = 4, units = c("in"),
-       dpi = 600, limitsize = FALSE, path = "~/Desktop")
+genes_to_plot <- rbind(genes_to_plot_mature, genes_to_plot_immature)
 
-RidgePlot(data, features=c("Lgals3"), col=c("grey","orange"))
-ggsave("ridge plot mac2+ microglia.pdf", plot = last_plot(), device = "pdf",
-       scale = 0.8, width = 5.5, height = 4, units = c("in"),
-       dpi = 600, limitsize = FALSE, path = "~/Desktop")
+# Set color palette
+my_color <- c("#2B8CBE", "#D7301F", "skyblue","seashell3", "plum1")
+my_color_1 <- c("#D7301F","Grey", "#2B8CBE")
+
+# Plot volcano plot
+dev.off()
+ggplot() + 
+  geom_point(data=marker, aes(x=avg_logFC, y=-log10(p_val_adj), colour=colours),
+             shape=19, alpha=1, size=1) +
+  scale_color_manual(values = my_color_1,
+                     name="DEGs",
+                     breaks=rev(names(table(marker$colours))),
+                     labels=rev(names(table(marker$colours)))) +
+  geom_point(data=genes_to_plot,
+             aes(x=avg_logFC, y=-log10(p_val_adj)),
+             shape=19, alpha=1, size=3) +
+  geom_text_repel(data=genes_to_plot,
+                  aes(x=avg_logFC, y=-log10(p_val_adj), label = row.names(genes_to_plot)), 
+                  color="black", fontface = 'bold',size = 5, box.padding = 0.5,
+                  point.padding = 1, segment.size=0.25, segment.colour="black") +
+  ylab("-Log10[FDR]") + xlab("Log2FC") +
+  ggtitle("Mac2+ cells vs Homeostatic MG") +
+  theme_bw()+
+  theme(panel.grid.major.x  = element_blank(),
+        panel.grid.major.y  = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_rect(colour = "black", size = 1),
+        axis.text.x = element_text(colour = "black", size=20),
+        axis.text.y = element_text(colour = "black", size=20),
+        axis.title.x = element_text(colour = "black", size=20),
+        axis.title.y = element_text(colour = "black", size=20),
+        plot.title= element_text(size = 20, face = "bold")) +
+  theme(aspect.ratio = 1) +
+  scale_x_continuous(breaks=seq(-4, 4, 2), limits=c(-4, 4))
+
+ggsave("Volcano_Mac2_pos_genes.pdf", plot = last_plot(), device = "pdf", path = "~/Desktop",
+       scale = 0.8, width = 7, height = 7, units = c("in"),
+       dpi = 600, limitsize = FALSE)
