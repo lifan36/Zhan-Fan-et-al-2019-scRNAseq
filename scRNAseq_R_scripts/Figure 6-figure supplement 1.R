@@ -77,12 +77,12 @@ my_labels <- paste(my_labels, "%", sep="")
 ggplot(percent_summary_mac2, aes(x=2, y=Percent_UP_MAC2_pos, fill=dev_stage)) +
   geom_bar(width = 1, stat = "identity", color="black", size=0.25) + coord_polar("y", start=0, direction = -1) +
   xlim(0.5, 2.5) + scale_fill_manual(values = my_color,
-                                     name="MG Dev Genes", labels=my_labels) +
+                                     name="MG Dev Genes", labels=my_labels)+ 
   
   geom_text(aes(x=0.5, y=0), label=paste("overlap",sum(unlist(lapply(dev.up.overlap,length))),sep="\n"), size=5) +
   ylab(NULL) + xlab(NULL) +
   theme(aspect.ratio = 1) +
-  theme_minimal() +
+  theme_minimal()+ 
   theme(plot.title = element_text(hjust = 0.5, size=20, face="bold"),
         legend.title = element_text(colour="black", size=14, face="bold"),
         legend.text = element_text(colour="black", size=14),
